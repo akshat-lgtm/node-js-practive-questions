@@ -1,0 +1,9 @@
+(function(exports, require, module, __filename, __dirname){
+   akshat={
+name: "akshat",
+fav_no: 3,
+developer: true
+
+}
+module.exports=akshat; 
+})
