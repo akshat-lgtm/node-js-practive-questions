@@ -1,0 +1,19 @@
+
+
+const express=require('express');
+const cookieParcer=require('cookie-parcer');
+const app=express();
+app.use(cookieParcer('my_cookie_secret'));
+app.get('/setcoolkie', (reg, res)=>{
+    res.cookie('theme','dark',{maxAge:9999})
+});
+
+app.get('/read',(req, res)=>{
+    console.log(reg.cookies);
+    console.log(req.signedCookies);
+    res.json({cookies: req,cookies, signed:req.signedCookies});
+});
+
+app.listen(2100, ()=>{
+    console.log('server is running');
+});
