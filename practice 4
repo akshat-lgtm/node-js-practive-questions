@@ -1,0 +1,59 @@
+const express = require('express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+
+const app = express();
+
+// Middleware
+app.use(session({
+    secret: 'my_secret_key',
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Login Page (GET)
+app.get('/login', (req, res) => {
+    res.send(`
+        <form method="POST" action="/login">
+            <input type="text" name="username" placeholder="Enter your username"/>
+            <input type="password" name="password" placeholder="Enter your password"/>
+            <button type="submit">Login</button>
+        </form>
+    `);
+});
+
+// Login Handler (POST)
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    if (username === 'user' && password === 'pass') {
+        req.session.user = { username };
+        return res.send('Logged in successfully! <a href="/dashboard">Go to Dashboard</a>');
+    }
+
+    res.status(401).send('Invalid credentials');
+});
+
+// Middleware to protect routes
+function ensureAuth(req, res, next) {
+    if (req.session && req.session.user) return next();
+    res.status(401).send('Unauthorized');
+}
+
+// Protected Route
+app.get('/dashboard', ensureAuth, (req, res) => {
+    res.send(`Welcome ${req.session.user.username}! This is your dashboard.`);
+});
+
+// Logout
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.send('Logged out successfully');
+});
+
+// Server
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
