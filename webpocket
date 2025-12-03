@@ -1,0 +1,25 @@
+
+const webSocket=require('ws');
+const web=new webSocket.Server({port:3000});
+
+
+console.log("Websocket sever running at ws://localhost:8000");
+
+web.on('connection',(socket)=> {
+    console.log("clicent is connected");
+    socket.send("welcome papa ji in your websocekt is connected")
+
+    socket.on('message', (data) => {
+        console.log("Client says:", data.toString());
+
+       
+        socket.send("Server received: " + data.toString());
+    });
+
+    
+    socket.on('close', () => {
+        console.log("Client disconnected");
+    });
+
+
+});
